@@ -5,9 +5,89 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style type="text/css">
+
+        body {
+            font-family: 'Montserrat';
+        }
+        
+        .auto-style5 {
+            text-align: center;
+            border-left-style: none;
+            border-right-style: none;
+            border-top-style: none;
+            border-bottom: 1.5pt solid gray;
+            width: 100%; margin-left: auto;
+        }
+        
+        .auto-style7 {
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            border-left-style: none;
+            border-right-style: none;
+            border-top-style: none;
+            border-bottom: .75pt solid black;
+            background-color: #af0000; /* #ac023b; */
+            font-size: 12px;  height: 22px; 
+        }
+        .auto-style11 {
+            text-align: center;
+            border-style: none;
+            font-size: 12px;  height: 22px; 
+        }
+        .auto-style13 {
+            font-weight: normal;
+            color: black;
+            text-align: center;
+            border-style: none;
+            background-color: white;
+            font-size: 11px;  height: 22px; 
+        }
+        .dateStyle1{
+                font-size: 12px;
+                color: white;
+                text-align: center;
+                font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+                font-weight: bold;
+                background-color: #af0000;
+                font-style: italic;
+            }
+        </style>
 </head>
 <body>
-    <table id="2023_salah_times">
+    <p id='dateDisplay' class="dateStyle1"></p>        
+    <table class="auto-style5" id="siteTable"> 
+        <!-- fpstyle: 25,011111100 -->
+        <tr>
+            <td class="auto-style7">&nbsp;</td>
+            <td class="auto-style7">Fajr</td>
+            <td class="auto-style7">Sunrise</td>
+            <td class="auto-style7">Dhuhr</td>
+            <td class="auto-style7">Asr</td>
+            <td class="auto-style7">Maghrib</td>
+            <td class="auto-style7">Isha</td>
+        </tr>
+        <tr>
+            <td class="auto-style11">Start</td>
+            <td class="auto-style13"></td>
+            <td class="auto-style13"></td>
+            <td class="auto-style13"></td>
+            <td class="auto-style13"></td>
+            <td class="auto-style13"></td>
+            <td class="auto-style13"></td>
+        </tr>
+        <tr>
+            <td class="auto-style11">Jama'ah</td>
+            <td class="auto-style13">&nbsp;</td>
+            <td class="auto-style13">&nbsp;</td>
+            <td class="auto-style13"></td>
+            <td class="auto-style13"></td>
+            <td class="auto-style13"></td>
+            <td class="auto-style13"></td>
+        </tr>
+    </table>
+    <table id="2023_salah_times" style="display:none">
         <tr>
             <td>Date</td>
             <td>Hijri Date</td>
@@ -5867,5 +5947,21 @@
     </table>
 </body>
 </html>
-<script>
+<script type="text/jscript">
+
+    islamicDate = new Intl.DateTimeFormat('en-EN-u-ca-islamic', {day: 'numeric', month: 'long',year : 'numeric'}).format(Date.now());
+    
+    date = new Date();   
+    engDate = date.toLocaleDateString('en-gb',{weekday:'long', day:'numeric', year:'numeric', month:'long' }) 
+    arDate = date.toLocaleDateString('ar-SA',{day:'numeric', year:'numeric', month:'long' })
+    document.getElementById('dateDisplay').innerHTML = 'Prayer times today ' + '| '.italics() + engDate //+ ' | '.bold() + arDate	 
+    
+    let siteTbl = document.getElementById("siteTable")
+	let dayNum = date.getDate();
+	let monthNum = date.getMonth()+1	//since months starts from 0
+	// monthNum = 12; dayNum=11;  //testing 
+	
+
+
+    
 </script>
