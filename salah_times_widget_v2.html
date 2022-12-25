@@ -5951,17 +5951,29 @@
 
     islamicDate = new Intl.DateTimeFormat('en-EN-u-ca-islamic', {day: 'numeric', month: 'long',year : 'numeric'}).format(Date.now());
     
-    date = new Date();   
-    engDate = date.toLocaleDateString('en-gb',{weekday:'long', day:'numeric', year:'numeric', month:'long' }) 
-    arDate = date.toLocaleDateString('ar-SA',{day:'numeric', year:'numeric', month:'long' })
-    document.getElementById('dateDisplay').innerHTML = 'Prayer times today ' + '| '.italics() + engDate //+ ' | '.bold() + arDate	 
+    date = new Date();
+    const startOfYear = new Date(date.getFullYear(), 0, 1);
+    const diff = date - startOfYear;
+    const oneDay = 1000 * 60 * 60 * 24;
+    let dayOfYear = Math.floor(diff / oneDay) + 1;
+	// dayOfYear=365;  //testing 
     
-    let siteTbl = document.getElementById("siteTable")
-	let dayNum = date.getDate();
-	let monthNum = date.getMonth()+1	//since months starts from 0
-	// monthNum = 12; dayNum=11;  //testing 
-	
+    engDate = date.toLocaleDateString('en-gb',{weekday:'long', day:'numeric', year:'numeric', month:'long' })
+    arDate = date.toLocaleDateString('ar-SA',{day:'numeric', year:'numeric', month:'long' })
+    document.getElementById('dateDisplay').innerHTML = 'Prayer times today ' + '| '.italics() + engDate //+ ' | '.bold() + arDate
+    
+    let siteTbl = document.getElementById("siteTable")	
+    let timetable = document.getElementById("2023_salah_times") //timetable also found in masjidBox folder
 
+    //for loop for filling in start times
+    for (let i=1; i<7; i++) {	//rows & cells start at 0
+		siteTbl.rows[1].cells[i].innerHTML = timetable.rows[dayOfYear].cells[i+2].innerHTML;
+	}
+	
+    //filling in jamaat imes
+    for (let i=1; i<6; i++) {       		
+        siteTbl.rows[2].cells[i<2 ? i : i+1].innerHTML = timetable.rows[dayOfYear].cells[i+8].innerHTML;        
+	}
 
     
 </script>
