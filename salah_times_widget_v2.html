@@ -56,6 +56,7 @@
         </style>
 </head>
 <body>
+    <p id="nextPrayer" style="color:rgb(0, 0, 0);text-align:center;font-weight: bold;"> next salah </p>
     <p id='dateDisplay' class="dateStyle1"></p>        
     <table class="auto-style5" id="siteTable"> 
         <!-- fpstyle: 25,011111100 -->
@@ -5951,12 +5952,12 @@
 
     islamicDate = new Intl.DateTimeFormat('en-EN-u-ca-islamic', {day: 'numeric', month: 'long',year : 'numeric'}).format(Date.now());
     
-    date = new Date();
+    let date = new Date();
+    // let date = new Date(2000, 6, 1, 23, 30, 0, 0);		//testing (yr, month, day, hours, minutes, secs, millisecs)
     const startOfYear = new Date(date.getFullYear(), 0, 1);
     const diff = date - startOfYear;
     const oneDay = 1000 * 60 * 60 * 24;
-    let dayOfYear = Math.floor(diff / oneDay) + 1;
-	// dayOfYear=365;  //testing 
+    let dayOfYear = Math.floor(diff / oneDay) + 1;	
     
     engDate = date.toLocaleDateString('en-gb',{weekday:'long', day:'numeric', year:'numeric', month:'long' })
     arDate = date.toLocaleDateString('ar-SA',{day:'numeric', year:'numeric', month:'long' })
@@ -5970,10 +5971,64 @@
 		siteTbl.rows[1].cells[i].innerHTML = timetable.rows[dayOfYear].cells[i+2].innerHTML;
 	}
 	
-    //filling in jamaat imes
+    //filling in jamaat times
+    let jamahTimes = []
     for (let i=1; i<6; i++) {       		
         siteTbl.rows[2].cells[i<2 ? i : i+1].innerHTML = timetable.rows[dayOfYear].cells[i+8].innerHTML;        
+        jamahTimes.push(timetable.rows[dayOfYear].cells[i+8].innerHTML)
 	}
 
+    ///////////////////////		NEXT SALAH TIME DISPLAY
+
+	const hrs = []			// jamah hrs and mins
+	const mins = []    
+
+	for (let i=0; i<5; i++) { 	//retrieving hours and mins from today jamah times and converting to 24hr format        
+		hrs[i] = parseInt( jamahTimes[i].split(":")[0], 10)
+		mins[i] = parseInt( jamahTimes[i].split(":")[1])  
+	}	
+
+	let nxtSalah = "q"
+	let nextSalahTime = "q"
+
+	let salahNames = ["Fajr Jama'ah ", "Dhuhr Jama'ah ", "Asr Jama'ah ", "Maghrib Jama'ah ", "Isha Jama'ah "]
+
+	for (let i=0; i<5; i++) {		// if current hour less then next jamat hour --> next salah
+		if (date.getHours()<hrs[i]) {
+					nxtSalah=salahNames[i]; nextSalahTime=jamahTimes[i];
+					break;
+		} 
+	}	
+
+	for (let i=0; i<5; i++) {	
+		if (date.getHours()==hrs[i]) { // if current hour is = salah time hour
+			if (date.getMinutes()<mins[i]) { nxtSalah=salahNames[i]; nextSalahTime=jamahTimes[i]; 
+			} else if (i==4) { nxtSalah=salahNames[0]; nextSalahTime=jamahTimes[0] }
+			else { nxtSalah=salahNames[i+1]; nextSalahTime=jamahTimes[i+1] }
+			break;
+		} 
+	}
+
+	if (date.getHours()>=hrs[4]) {   // after isha --> fajr next day  //this code dosent work on last day of every month 
+		
+		if (date.getHours()==hrs[4] && date.getMinutes()>mins[4]) {		
+			nxtSalah=salahNames[0]; nextSalahTime=jamahTimes[0];
+			if (timetable.rows[dayOfYear+1].cells[1].innerHTML=="Sun" && timetable.rows[dayOfYear+1].cells[8].innerHTML!='“') { 
+				nextSalahTime=timetable.rows[dayOfYear+1].cells[8].innerHTML;
+			}
+
+		} else if ((date.getHours()==hrs[4] && date.getMinutes()<mins[4])) {}
+
+		else { 
+			nxtSalah=salahNames[0]; nextSalahTime=jamahTimes[0];
+			if (timetable.rows[dayOfYear+1].cells[1].innerHTML=="Sun" && timetable.rows[dayOfYear+1].cells[8].innerHTML!='“') { 
+				nextSalahTime=timetable.rows[dayOfYear+1].cells[8].innerHTML;
+			}
+		}
+		
+	}	
+	
+	//document.getElementById('test1').innerHTML = d.getHours()<hrs[4] ; //test
+	document.getElementById('nextPrayer').innerHTML = "Next Prayer: "+ nxtSalah + nextSalahTime ;     
     
 </script>
